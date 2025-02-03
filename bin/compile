@@ -66,6 +66,9 @@ test ! -d ".profile.d" && mkdir -p .profile.d || true
 echo "export PATH=\"\$HOME/$BUN_DIR_NAME/${BUN_BINARY}:\$PATH\"" > .profile.d/bun.sh
 echo "export PATH=\"\$HOME/.bin:\$PATH\"" >> .profile.d/bun.sh
 
+echo "export PATH=\"$BUN_DIR/${BUN_BINARY}:\$PATH\"" > ./export
+echo "export BUN_INSTALL=\"$BUN_DIR\"" >> ./export
+
 # Add the node_modules/.bin directory to the PATH for both build and runtime environments
 NODE_BIN_PATH="$BUILD_DIR/node_modules/.bin"
 export PATH="$PATH:$NODE_BIN_PATH"
@@ -81,6 +84,7 @@ export NODE_ENV=${NODE_ENV:-production}
 echo "export NODE_ENV=\${NODE_ENV:-production}" >> .profile.d/bun.sh
 echo "NODE_ENV=$NODE_ENV"
 
+
 # Here you would use bun to build your application
 echo "-----> Building application with Bun"
 
@@ -89,7 +93,7 @@ bun install
 
 # Run the build script if specified
 if grep -q '"build":' package.json; then
-  bun run build
+  bun --config ./bunfig.toml run build
 else
   echo "Build script not found in package.json, skipping"
 fi
